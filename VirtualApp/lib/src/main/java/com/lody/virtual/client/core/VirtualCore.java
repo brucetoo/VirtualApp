@@ -175,8 +175,12 @@ public final class VirtualCore {
             this.context = context;
             mainThread = ActivityThread.currentActivityThread.call();
             unHookPackageManager = context.getPackageManager();
+            //get providers in apk(PM)
             hostPkgInfo = unHookPackageManager.getPackageInfo(context.getPackageName(), PackageManager.GET_PROVIDERS);
+            //判断进程
             detectProcessType();
+
+            //注入整个系统的代理服务~~~
             InvocationStubManager invocationStubManager = InvocationStubManager.getInstance();
             invocationStubManager.init();
             invocationStubManager.injectAll();

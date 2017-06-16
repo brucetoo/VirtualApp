@@ -44,6 +44,10 @@ public abstract class MethodInvocationProxy<T extends MethodInvocationStub> impl
         }
         Class<? extends MethodInvocationProxy> clazz = getClass();
         Inject inject = clazz.getAnnotation(Inject.class);
+        /**
+         * 主要是解决方法注解中需要代理的方法类
+         * 见{@link MethodMethodProxies}
+         */
         if (inject != null) {
             Class<?> proxiesClass = inject.value();
             Class<?>[] innerClasses = proxiesClass.getDeclaredClasses();

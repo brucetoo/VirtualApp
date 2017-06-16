@@ -38,11 +38,14 @@ public final class RefClass {
 
     public static Class load(Class mappingClass, Class<?> realClass) {
         Field[] fields = mappingClass.getDeclaredFields();
+        //初始化class 中所有的成员变量
         for (Field field : fields) {
             try {
-                if (Modifier.isStatic(field.getModifiers())) {
+                if (Modifier.isStatic(field.getModifiers())) {//静态方法~
+                    //获取反射需要的类型 -- 每个类型对应一个构造函数,且都在 Ref对象中有初始化
                     Constructor<?> constructor = REF_TYPES.get(field.getType());
                     if (constructor != null) {
+                        //用构造函数初始化所有的静态成员变量
                         field.set(null, constructor.newInstance(realClass, field));
                     }
                 }

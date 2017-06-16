@@ -30,6 +30,7 @@ import mirror.RefStaticInt;
 import mirror.RefStaticMethod;
 
 public class ActivityThread {
+    //所有 method/object 的初始化都发生在 RefClass.load 的调用中 且所有的成员变量都已经被初始化了
     public static Class<?> TYPE = RefClass.load(ActivityThread.class, "android.app.ActivityThread");
     public static RefStaticMethod currentActivityThread;
     public static RefMethod<String> getProcessName;

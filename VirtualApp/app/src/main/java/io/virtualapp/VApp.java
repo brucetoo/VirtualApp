@@ -3,9 +3,10 @@ package io.virtualapp;
 import android.app.Application;
 import android.content.Context;
 
-import com.flurry.android.FlurryAgent;
 import com.lody.virtual.client.core.VirtualCore;
 import com.lody.virtual.client.stub.StubManifest;
+
+import java.lang.reflect.Field;
 
 import io.virtualapp.delegate.MyAppRequestListener;
 import io.virtualapp.delegate.MyComponentDelegate;
@@ -46,13 +47,8 @@ public class VApp extends Application {
 
             @Override
             public void onMainProcess() {
+                //主进程初始化Once
                 Once.initialise(VApp.this);
-                new FlurryAgent.Builder()
-                        .withLogEnabled(true)
-                        .withListener(() -> {
-                            // nothing
-                        })
-                        .build(VApp.this, "48RJJP7ZCZZBB6KMMWW5");
             }
 
             @Override
@@ -63,6 +59,8 @@ public class VApp extends Application {
                 virtualCore.setPhoneInfoDelegate(new MyPhoneInfoDelegate());
                 //fake task description's icon and title
                 virtualCore.setTaskDescriptionDelegate(new MyTaskDescriptionDelegate());
+
+                modifyModelAndProduct("OPPO R9 Plusm A","OPPO");
             }
 
             @Override
@@ -78,6 +76,29 @@ public class VApp extends Application {
                 virtualCore.addVisibleOutsidePackage("com.immomo.momo");
             }
         });
+    }
+
+    private void modifyModelAndProduct(String model, String product) {
+        try {
+            Class<?> build = Class.forName("android.os.Build");
+            Field field = build.getDeclaredField("MODEL");
+            field.setAccessible(true);
+            field.set(null, model);
+
+            Field f2 = build.getDeclaredField("PRODUCT");
+            f2.setAccessible(true);
+            f2.set(null, product);
+
+            Field f3 = build.getDeclaredField("MANUFACTURER");
+            f3.setAccessible(true);
+            f3.set(null, product);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 }
